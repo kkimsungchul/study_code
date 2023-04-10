@@ -1,0 +1,12 @@
+#serverName
+sungchul_linux
+#hostName
+sungchul_tomcat
+#serverIP
+192.168.0.55
+#serverDisk
+/data1,99999,88888,1111
+/data2,55555,2222,1523
+/data3,44444,1111,12311
+#serverMemory
+4096,2900,1196
