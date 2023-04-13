@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/stock?serverTimezone=UTC&characterEncoding=UTF-8
+    username: securus
+    password: securus1234
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties :
+      hibernate:
+        dialect : org.hibernate.dialect.MySQL57Dialect
+        storage_engine : innodb
+        format_sql: true
+        ddl-auto: validate
+
+logging:
+  level:
+    org:
+      hibernate:
+      SQL: DEBUG
+      type:
+        descriptor:
+        sql:
+          BasicBinder: TRACE
+
+server:
+  port: 9000
