@@ -6,6 +6,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+
 
 //@WebAppConfiguration
 @SpringBootTest
@@ -18,12 +20,14 @@ public class JPATest {
     @Autowired
     AdminUserRepository adminUserRepository;
 
+    @Order(1)
     @Test
     @DisplayName("stock_list 테이블 데이터 가져오기")
     public void getStockListAll(){
         System.out.println(stockListRepository.findAll());
     }
 
+    @Order(2)
     @Test
     @DisplayName("admin_user 테이블 데이터 가져오기")
     public void getAdminUserAll(){
@@ -31,19 +35,42 @@ public class JPATest {
 
     }
 
+    @Order(3)
     @Test
-    @DisplayName("admin_user 테이블 name이 일치하는 값 가져오기")
-    public void getAdminUserByName(){
+    @DisplayName("admin_user 테이블 name이 일치하는 데이터 가져오기")
+    public void findAllByName(){
         System.out.println(adminUserRepository.findAllByName("성철이"));
 
     }
 
+    @Order(4)
     @Test
-    @DisplayName("admin_user 테이블 UserId가 일치하는 값 가져오기")
-    public void getAdminUserByUserId(){
+    @DisplayName("admin_user 테이블 UserId에 특정값이 포함된 데이터 가져오기 (like)")
+    public void findAllByUserIdContaining(){
         System.out.println(adminUserRepository.findAllByUserIdContaining(1));
+    }
+
+    @Order(5)
+    @Test
+    @DisplayName("stock_list 테이블에서 stockCode 에 특장값이 포함된 데이터 가져오기 (in)")
+    public void findByStockCodeIn(){
+        ArrayList<String> stockCodeList = new ArrayList<>();
+        stockCodeList.add("001460");
+        stockCodeList.add("058820");
+        stockCodeList.add("009520");
+        stockCodeList.add("003550");
+        System.out.println(stockListRepository.findByStockCodeIn(stockCodeList));
 
     }
+
+    @Order(6)
+    @Test
+    @DisplayName("stock_list 테이블에서 stockName 이 일치하는 데이터 가져오기")
+    public void findByStockName(){
+        System.out.println(stockListRepository.findByStockName("삼성전자"));
+    }
+
+
 
 
 
