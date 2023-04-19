@@ -9,6 +9,9 @@ public interface AdminUserRepository extends JpaRepository<AdminUser, String> {
     //모든 목록 출력
     List<AdminUser> findAll();
 
+    List<AdminUser> findTop10ByOrderByUserId();
+    // findTop10ByOrderBy
+
 
     //name이 일치하는 목록 출력
     List<AdminUser> findAllByName(String name);

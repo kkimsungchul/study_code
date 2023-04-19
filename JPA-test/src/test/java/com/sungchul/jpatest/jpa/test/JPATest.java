@@ -1,6 +1,7 @@
 package com.sungchul.jpatest.jpa.test;
 
 import com.sungchul.jpatest.domain.repository.AdminUserRepository;
+import com.sungchul.jpatest.domain.repository.ParsingDataRepository;
 import com.sungchul.jpatest.domain.repository.StockListRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class JPATest {
 
     @Autowired
     AdminUserRepository adminUserRepository;
+    
+//    @Autowired
+//    ParsingDataRepository parsingDataRepository;
 
     @Order(1)
     @Test
@@ -70,9 +74,19 @@ public class JPATest {
         System.out.println(stockListRepository.findByStockName("삼성전자"));
     }
 
+//    @Order(7)
+//    @Test
+//    @DisplayName("parsing_data 에 있는 모든 데이터 가져오기")
+//    public void parsingDataFindAll(){
+//        System.out.println(parsingDataRepository.findTop3());
+//    }
 
-
-
+    @Order(7)
+    @Test
+    @DisplayName("admin_user 테이블 UserId로 정렬하여 10개 가져오기")
+    public void findTop10ByOrderByUserId(){
+        System.out.println(adminUserRepository.findTop10ByOrderByUserId());
+    }
 
 
 }
