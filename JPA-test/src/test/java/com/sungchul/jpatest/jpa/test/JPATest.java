@@ -21,8 +21,8 @@ public class JPATest {
     @Autowired
     AdminUserRepository adminUserRepository;
     
-//    @Autowired
-//    ParsingDataRepository parsingDataRepository;
+    @Autowired
+    ParsingDataRepository parsingDataRepository;
 
     @Order(1)
     @Test
@@ -74,12 +74,6 @@ public class JPATest {
         System.out.println(stockListRepository.findByStockName("삼성전자"));
     }
 
-//    @Order(7)
-//    @Test
-//    @DisplayName("parsing_data 에 있는 모든 데이터 가져오기")
-//    public void parsingDataFindAll(){
-//        System.out.println(parsingDataRepository.findTop3());
-//    }
 
     @Order(7)
     @Test
@@ -87,6 +81,14 @@ public class JPATest {
     public void findTop10ByOrderByUserId(){
         System.out.println(adminUserRepository.findTop10ByOrderByUserId());
     }
+
+    @Order(8)
+    @Test
+    @DisplayName("parsing_data 에 있는 모든 데이터 seq 로 정렬하여 33개 가져오기")
+    public void findTop33ByOrderBySeq(){
+        System.out.println(parsingDataRepository.findTop33ByOrderBySeq());
+    }
+
 
 
 }

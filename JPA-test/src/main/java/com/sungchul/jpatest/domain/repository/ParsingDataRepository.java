@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ParsingDataRepository extends JpaRepository<ParsingData,String> {
 
-    //List<ParsingData> findTop3OrderBySeq();
+    List<ParsingData> findTop33ByOrderBySeq();
+
+
 }
