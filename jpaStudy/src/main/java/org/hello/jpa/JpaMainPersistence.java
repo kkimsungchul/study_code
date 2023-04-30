@@ -5,7 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-public class JpaMainCreate {
+public class JpaMainPersistence {
     public static void main(String[] args) {
 
         //EntityManagerFactory는 클래스 로딩시점에 하나만 만들어야함
@@ -17,11 +17,26 @@ public class JpaMainCreate {
         //트랜잭션 실행
         tx.begin();
         try{
-            Member member = new Member();
-            member.setId(1L);
-            member.setUsername("HelloA");
-            em.persist(member);
-            tx.commit();
+
+            Member member = em.find(Member.class,100L);
+            member.setUsername("zzaazzaa");
+            
+            //JPA에서 관리하지 않음
+            //영속성 컨텍스트에서제외댐
+            //em.detach(member);
+
+            //영속성 컨텍스트 초기화
+            //em.clear();
+
+            //영속성 컨텍스트 종료
+            em.close();
+            //조회가 안됨 Session/EntityManager is closed
+            Member member1 = em.find(Member.class,100L);
+
+
+
+            System.out.println("### commit start ###");
+            tx.commit();//commit 하는 시점에 쓰기 지연 SQL 저장소에 있는  INSERT 쿼리가 실행됨
         }catch (Exception e){
             e.printStackTrace();
             tx.rollback();

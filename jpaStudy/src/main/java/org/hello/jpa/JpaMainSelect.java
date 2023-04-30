@@ -18,7 +18,7 @@ public class JpaMainSelect {
         tx.begin();
         try{
             Member findMember =  em.find(Member.class,1L);
-            System.out.println(findMember.getName());
+            System.out.println(findMember.getUsername());
             System.out.println(findMember.getId());
             tx.commit();
         }catch (Exception e){

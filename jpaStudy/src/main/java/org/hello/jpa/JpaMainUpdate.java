@@ -21,7 +21,7 @@ public class JpaMainUpdate {
             //set을 해주면 바로 저장됨
             //java 컬렉션을 다루는것과 같음
             //JPA를 사용해서 Entity 를 가져오면 JPA가 관리함
-            findMember.setName("HelloJPA");
+            findMember.setUsername("HelloJPA");
             tx.commit();
         }catch (Exception e){
             tx.rollback();
