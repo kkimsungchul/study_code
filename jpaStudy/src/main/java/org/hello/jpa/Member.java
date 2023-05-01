@@ -6,9 +6,11 @@ import java.util.Date;
 
 @Entity //필수
 //@Table(name="MEMBER")//테이블명이 다를 때 해당 테이블명으로 지정
+@SequenceGenerator(name="member_seq_generator" , sequenceName = "member_seq")
 public class Member {
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "member_seq_generator")
     private Long id;
 
     @Column(name="name")//컬럼명이 다를때 해당 컬럼명으로 지정, 객체는 username DB는 name
