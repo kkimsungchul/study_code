@@ -1,5 +1,8 @@
 package org.hello.jpa;
 
+import org.hello.jpa.member.domain.Member;
+import org.hello.jpa.member.domain.Team;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -17,10 +20,15 @@ public class JpaMainCreate {
         //트랜잭션 실행
         tx.begin();
         try{
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
             Member member = new Member();
-            member.setId(1L);
-            member.setUsername("HelloA");
+            member.setUsername("member1");
+            member.setTeamId(team.getId());
             em.persist(member);
+
             tx.commit();
         }catch (Exception e){
             e.printStackTrace();

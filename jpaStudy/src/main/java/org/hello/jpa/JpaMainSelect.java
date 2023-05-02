@@ -1,5 +1,7 @@
 package org.hello.jpa;
 
+import org.hello.jpa.member.domain.Member;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;

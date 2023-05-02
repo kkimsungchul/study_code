@@ -1,5 +1,7 @@
 package org.hello.jpa;
 
+import org.hello.jpa.member.domain.Member;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -27,13 +29,7 @@ public class JpaMainCreate2 {
 //            Member findMember2 = em.find(Member.class,100L);
 //            System.out.println(findMember1==findMember2);
 
-            Member findMember = em.find(Member.class,100L);
-            findMember.setUsername("ZXZXZX");
-            //JPA가 자동으로 업데이트를 쳐주므로 쿼리를 보내지않아도 됨
-            //em.persist(findMember);
 
-            Member member1 = new Member(201L,"member201");
-            em.persist(member1);
             em.flush();
             System.out.println("### commit start ###");
             tx.commit();//commit 하는 시점에 쓰기 지연 SQL 저장소에 있는  INSERT 쿼리가 실행됨
