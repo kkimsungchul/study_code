@@ -7,8 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
-public class JpaMainCreate {
+public class JpaMainManyToMany {
     public static void main(String[] args) {
 
         //EntityManagerFactory는 클래스 로딩시점에 하나만 만들어야함
@@ -20,24 +21,48 @@ public class JpaMainCreate {
         //트랜잭션 실행
         tx.begin();
         try{
+
             Team team = new Team();
             team.setName("TeamA");
-            Team newTeam = new Team();
-            newTeam.setName("TeamB");
-            em.persist(newTeam);
+            em.persist(team);
 
             Member member = new Member();
             member.setUsername("member1");
             member.setTeam(team);
             em.persist(member);
 
-            Member findMember = em.find(Member.class , member.getId());
-            Team findTeam = findMember.getTeam();
-            System.out.println("### findTeam.getName()1 : " + findTeam.getName());
 
-            findMember.setTeam(newTeam);
-            findTeam = findMember.getTeam();
-            System.out.println("### findTeam.getName()2 : " + findTeam.getName());
+//            em.flush();
+//            em.clear();
+
+            Team findTeam = em.find(Team.class,team.getId());
+            //실제 사용하는 시점에서 쿼리를 한번 더 날림
+            List<Member> members = findTeam.getMembers();
+
+            for(Member m : members){
+                System.out.println("## m.getUsername() : " + m.getUsername());
+            }
+
+
+
+
+//
+//            em.flush();
+//            em.clear();
+//
+//            Member findMember = em.find(Member.class , member.getId());
+//            Team findTeam = findMember.getTeam();
+//            System.out.println("### findTeam.getName()1 : " + findTeam.getName());
+//            //System.out.println("### findTeam.getName()1 : " + findMember.getTeam().getMembers());
+//            List<Member> memberList = findMember.getTeam().getMembers();
+//
+//            for(Member m : memberList){
+//                System.out.println("## m : " + m.getUsername());
+//            }
+
+//            findMember.setTeam(newTeam);
+//            findTeam = findMember.getTeam();
+//            System.out.println("### findTeam.getName()2 : " + findTeam.getName());
 
 
 
