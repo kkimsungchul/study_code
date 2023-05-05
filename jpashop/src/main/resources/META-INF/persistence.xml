@@ -8,6 +8,9 @@
         <class>com.jpabook.jpashop.domain.Item</class>
         <class>com.jpabook.jpashop.domain.Order</class>
         <class>com.jpabook.jpashop.domain.OrderItem</class>
+        <class>com.jpabook.jpashop.domain.Category</class>
+        <class>com.jpabook.jpashop.domain.Delivery</class>
+
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
@@ -33,7 +36,7 @@
             <!--<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>-->
 
             <!--아래의 사이즈만큼 쿼리를 모았다가한번에 쿼리를 날림-->
-            <property name="hibernate.jdbc.batch_size" value="10"/>
+<!--            <property name="hibernate.jdbc.batch_size" value="10"/>-->
 
         </properties>
     </persistence-unit>
