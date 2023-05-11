@@ -1,13 +1,14 @@
 package org.hello.jpa.member.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 @Entity //필수
-public class Member {
+public class Member extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name ="MEMBER_ID")
@@ -27,11 +28,8 @@ public class Member {
     @JoinColumn(name ="LOCKER_ID")
     private Locker locker;
 
-
-
     @OneToMany(mappedBy = "member")
     private List<MemberProduct> memberProducts = new ArrayList<>();
-
 
     public Long getId() {
         return id;
