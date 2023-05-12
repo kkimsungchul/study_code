@@ -9,10 +9,12 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
-
   sql :
     init :
       mode : always
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
 
 server :
   port : 8080

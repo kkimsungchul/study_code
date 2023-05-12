@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kakaopay.assignment.stock.volume.StockViewMapper">
+
+    <select id="test" resultType="com.kakaopay.assignment.stock.volume.StockVolumeVO">
+        SELECT s.code , s.name , sv.view , sp.price FROM stock AS s
+        JOIN stock_views AS sv ON s.code = sv.stock_code
+        JOIN (
+            SELECT stock_code , price FROM stock_price
+            WHERE (stock_code , create_time) IN(
+                SELECT stock_code , MAX(create_time) FROM stock_price
+                GROUP BY stock_code
+            )) as sp ON s.code = sp.stock_code
+        ORDER BY sv.view DESC
+    </select>
+
+</mapper>

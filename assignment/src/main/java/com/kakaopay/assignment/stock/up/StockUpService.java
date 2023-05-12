@@ -2,15 +2,16 @@ package com.kakaopay.assignment.stock.up;
 
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("stockUpService")
+@AllArgsConstructor
+@Service("StockUpService")
 public class StockUpService {
 
-    @Autowired
+
     StockUpMapper stockUpMapper;
 
     public List<StockUpVO> test(){

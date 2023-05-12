@@ -24,4 +24,17 @@ id , code , volume , time
 # Swagger URL
 http://localhost:8080/swagger-ui/index.html
 
+# 기타 문제해결 - 데이터 비교
+H2 데이터베이스의 내장함수인 FORMATDATETIME() 을 사용하여 날짜를 비교할 경우 쿼리 조회시간이 100배 차이남.
+FORMATDATETIME() 을 사용한 쿼리문 실행 시간
+(20 rows, 13501 ms)
+(20 rows, 13826 ms)
+(20 rows, 13473 ms)
+
+FORMATDATETIME() 을 사용하지 않은 쿼리문 실행 시간
+(20 rows, 27 ms)
+(20 rows, 22 ms)
+(20 rows, 0 ms)
+
+
 

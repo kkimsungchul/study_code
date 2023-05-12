@@ -1,4 +1,4 @@
-package com.kakaopay.assignment.stock.up;
+package com.kakaopay.assignment.stock.down;
 
 
 import com.kakaopay.assignment.stock.main.StockVO;
@@ -9,9 +9,9 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockUpVO extends StockVO{
+public class StockDownVO extends StockVO{
 
-    private String up;
+    private String down;
 
 
 

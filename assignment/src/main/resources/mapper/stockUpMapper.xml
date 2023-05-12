@@ -5,7 +5,7 @@
 <mapper namespace="com.kakaopay.assignment.stock.up.StockUpMapper">
 
     <select id="test" resultType="com.kakaopay.assignment.stock.up.StockUpVO">
-        SELECT * FROM stock
+        SELECT code,name FROM stock
     </select>
 
 </mapper>
