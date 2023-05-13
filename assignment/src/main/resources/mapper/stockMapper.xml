@@ -4,8 +4,40 @@
 
 <mapper namespace="com.kakaopay.assignment.stock.main.StockMapper">
 
-    <select id="initStockPriceList" resultType="com.kakaopay.assignment.stock.main.StockVO">
-        SELECT stock_code as code , price FROM stock_price
+    <select id="initStockPriceList" parameterType="String" resultType="com.kakaopay.assignment.stock.main.StockVO">
+        SELECT s.code , s.name , sp.price as init_price FROM stock AS s JOIN
+        (SELECT * FROM stock_price
+        WHERE (stock_code , create_time) IN(
+           SELECT stock_code , MIN(create_time) FROM stock_price
+           WHERE create_time > #{date}
+           GROUP BY stock_code
+        )) AS sp ON s.code = sp.stock_code
+
     </select>
+
+    <insert id="priceDataChange" parameterType="String">
+        INSERT INTO stock_price (stock_code , price)
+        SELECT s.code ,  sp.price*truncate(0.7 + (RAND() * 0.6),4)
+        FROM stock AS s JOIN
+        (SELECT * FROM stock_price
+         WHERE (stock_code , create_time) IN(
+             SELECT stock_code , MIN(create_time) FROM stock_price
+             WHERE create_time > #{date}
+             GROUP BY stock_code
+         )) AS sp ON s.code = sp.stock_code
+    </insert>
+
+    <update id="stockPriceDateChange">
+        UPDATE stock_price SET create_time = now()-1
+    </update>
+
+    <update id="toDayDataInsert">
+        INSERT INTO stock_price (stock_code , price)
+        SELECT stock_code , price FROM stock_price
+        WHERE (stock_code , create_time) IN(
+            SELECT stock_code , MAX(create_time) FROM stock_price
+            GROUP BY stock_code
+        )
+    </update>
 
 </mapper>

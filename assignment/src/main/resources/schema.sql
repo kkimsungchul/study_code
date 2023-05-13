@@ -18,12 +18,14 @@ CREATE TABLE stock_price(
 
 CREATE TABLE stock_views(
     stock_code varchar(10),
-    view int(20),
-    create_time timestamp NOT NULL default now()
+    view int(10),
+    create_time timestamp NOT NULL default now(),
+    modify_time timestamp NOT NULL default now()
 );
 
 CREATE TABLE stock_trading_volume(
     stock_code varchar(10),
     volume int(10),
-    create_time timestamp NOT NULL default now()
+    create_time timestamp NOT NULL default now(),
+    modify_time timestamp NOT NULL default now()
 );

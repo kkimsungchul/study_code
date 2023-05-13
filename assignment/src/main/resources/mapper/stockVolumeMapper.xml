@@ -2,18 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.kakaopay.assignment.stock.volume.StockViewMapper">
+<mapper namespace="com.kakaopay.assignment.stock.volume.StockVolumeMapper">
 
-    <select id="test" resultType="com.kakaopay.assignment.stock.volume.StockVolumeVO">
-        SELECT s.code , s.name , sv.view , sp.price FROM stock AS s
-        JOIN stock_views AS sv ON s.code = sv.stock_code
+    <select id="getStockListByVolume" parameterType="com.kakaopay.assignment.common.PagingVO" resultType="com.kakaopay.assignment.stock.volume.StockVolumeVO">
+        SELECT s.code , s.name , sv.volume , stv1.price as now_price, stv2.price as init_price,
+        CONCAT (CAST((stv1.price - stv2.price) * 100.0 / stv2.price AS DECIMAL(10,2)),'%') percent
+        FROM stock AS s
+        JOIN stock_trading_volume AS sv ON s.code = sv.stock_code
         JOIN (
             SELECT stock_code , price FROM stock_price
             WHERE (stock_code , create_time) IN(
                 SELECT stock_code , MAX(create_time) FROM stock_price
                 GROUP BY stock_code
-            )) as sp ON s.code = sp.stock_code
-        ORDER BY sv.view DESC
+        )) as stv1 ON s.code = stv1.stock_code
+        JOIN (
+            SELECT stock_code , price FROM stock_price
+            WHERE (stock_code , create_time) IN(
+                SELECT stock_code , MIN(create_time) FROM stock_price
+                WHERE create_time > #{toDay}
+                GROUP BY stock_code
+        )) as stv2 ON s.code = stv2.stock_code
+        ORDER BY sv.volume DESC
+        LIMIT #{limit} OFFSET #{pageNum};
     </select>
+
+    <update id="volumeDataChange">
+        UPDATE stock_trading_volume SET
+        volume= FLOOR(RAND()*10000),
+        modify_time = now()
+    </update>
 
 </mapper>

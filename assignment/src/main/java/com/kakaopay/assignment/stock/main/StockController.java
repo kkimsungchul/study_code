@@ -2,13 +2,13 @@ package com.kakaopay.assignment.stock.main;
 
 import com.kakaopay.assignment.common.ResponseAPI;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 
 
 @AllArgsConstructor
@@ -18,18 +18,25 @@ public class StockController {
 
     StockService stockService;
 
-    @GetMapping
-    public ResponseEntity<ResponseAPI> aa(){
-
-        ResponseAPI responseAPI = new ResponseAPI();
-        responseAPI.setData(stockService.initStockPriceList());
+    @PostMapping("/change")
+    public ResponseEntity<ResponseAPI> allDataChange(@RequestBody DataChangeVO dataChangeVO){
+        String result = stockService.dataChange(dataChangeVO);
+        ResponseAPI responseAPI = ResponseAPI.builder()
+                .message("success")
+                .data(result)
+                .timestamp(LocalDateTime.now())
+                .build();
         return new ResponseEntity<>(responseAPI, HttpStatus.OK);
     }
 
-//    @GetMapping("/test")
-//    public ResponseEntity<ResponseAPI> test(){
-//        ResponseAPI responseAPI = new ResponseAPI();
-//        responseAPI.setData(InitStockPriceVo.initStockPriceVoList);
-//        return new ResponseEntity<>(responseAPI, HttpStatus.OK);
-//    }
+    @GetMapping(value = {""})
+    public ResponseEntity<ResponseAPI> initDate(){
+        ResponseAPI responseAPI = ResponseAPI.builder()
+                .message("success")
+                .data(stockService.initStockPriceList())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(responseAPI, HttpStatus.OK);
+    }
+
 }

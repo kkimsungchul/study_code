@@ -1,5 +1,6 @@
 package com.kakaopay.assignment.config;
 
+import lombok.AllArgsConstructor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -12,11 +13,11 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
+@AllArgsConstructor
 @Configuration
 @MapperScan(value={"com.kakaopay.assignment.stock.*"})  //mapper 인터페이스 경로
 public class MyBatisConfig {
 
-    @Autowired
     ApplicationContext applicationContext;
 
     @Bean
@@ -26,7 +27,6 @@ public class MyBatisConfig {
         sqlSessionFactory.setDataSource(dataSource);
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
-        //쿼리문을 작성할 mapper.xml 파일들의 경로
         sqlSessionFactory.setMapperLocations(resolver.getResources("classpath:mapper/*Mapper.xml"));
 
 

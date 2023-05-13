@@ -24,7 +24,4 @@ public class ResponseAPI {
     @Schema(name = "timestamp", description  = "시간", example = "2023-05-21 17:31:00")
     private LocalDateTime timestamp;
 
-
-
-
 }
