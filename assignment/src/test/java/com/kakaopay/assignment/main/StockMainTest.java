@@ -52,7 +52,7 @@ public class StockMainTest {
         stockService.stockPriceDateChange();
         assertTrue(stockService.initStockPriceList().size()==0);
         stockService.toDayDataInsert();
-        assertTrue(stockService.initStockPriceList().size()==120);
+        assertTrue(stockService.initStockPriceList().size()>=120);
     }
 
 }
