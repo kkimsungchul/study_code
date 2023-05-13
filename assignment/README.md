@@ -203,6 +203,14 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 ```
 
 ### 데이터 랜덤 갱신
+```text
+해당 API 호출 시 Database에 있는 값들이 변경되도록 구현
+all : 가격 , 거래량 , 조회수 변경
+view : 조회수 변경
+price : 가격 변경
+volume : 거래량 변경
+```
+ 
 - URL : http://localhost:8080/stock/change
 - Method : POST
 - Data : 
@@ -221,6 +229,10 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 ```
 
 ### 인기종목
+```text
+조회수(view) 컬럼을 생성하여 사용자가 클릭했을 때 하나씩 증가한다는 가정으로 구현
+view가 높은순으로 조회되도록 구현
+```
 - URL : http://localhost:8080/view/{page}
 - Method : GET
 - ResultData : 
@@ -255,6 +267,9 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 ```
 
 ### 상승 종목
+```text
+price 컬럼을 생성하여 시초가와 현재가의 등략률(percent)을 계산하여 등략률이 높은 순으로 조회되도록 구현
+```
 - URL : http://localhost:8080/rate/up/{page}
 - Method : GET
 - ResultData :
@@ -286,6 +301,9 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 ```
 
 ### 하락 종목
+```text
+price 컬럼을 생성하여 시초가와 현재가의 등략률(percent)을 계산하여 등략률이 낮은 순으로 조회되도록 구현
+```
 - URL : http://localhost:8080/rate/down/{page}
 - Method : GET
 - ResultData :
@@ -318,6 +336,10 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 
 
 ### 거래량
+```text
+거래량(volume) 컬럼을 생성하여 사용자가 거래를 진행했을 때 하나씩 증가한다는 가정으로 구현
+volume가 높은 순으로 조회되도록 구현
+```
 - URL : http://localhost:8080/volume/{page}
 - Method : GET
 - ResultData :
