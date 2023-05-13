@@ -53,7 +53,6 @@ java -jar build/libs/assignment-0.0.1-SNAPSHOT.jar
 ### DB 접속 URL
 - http://localhost:8080/h2-console/login.jsp
 - Saved Settings : Generic H2 (Embedded)
-- Setting Name : Generic H2 (Embedded)
 - ID : sa
 - PW : 
 - JDBC URL : jdbc:h2:~/test
@@ -175,7 +174,7 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
   -JAVA 처리
   SELECT -> JAVA(데이터변경) -> INSERT or UPDATE
   -DB 처리
-  SELECT -> UPDATE or INSERT
+  SELECT -> INSERT or UPDATE
 
 ```
 - 현재가 갱신시 계산 공식

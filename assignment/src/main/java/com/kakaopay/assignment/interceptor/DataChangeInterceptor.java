@@ -22,7 +22,7 @@ public class DataChangeInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //stockService.dataChange(DataChangeVO.builder().type("all").build());
+        stockService.dataChange(DataChangeVO.builder().type("all").build());
         return true;
     }
 
