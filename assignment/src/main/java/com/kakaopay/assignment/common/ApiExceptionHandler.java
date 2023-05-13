@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 public class ApiExceptionHandler {
     @ExceptionHandler(value = { Exception.class })
     public ResponseEntity<ResponseAPI> exceptionHandler(HttpServletRequest request, final Exception e){
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ResponseAPI("fail",e.getMessage(),LocalDateTime.now()));
+        return new ResponseEntity<>(new ResponseAPI("fail",e.getMessage(),LocalDateTime.now()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

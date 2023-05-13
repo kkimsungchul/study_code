@@ -21,10 +21,10 @@ public class StockViewService {
      * @return List<StockViewVO>
      * */
     @SuppressWarnings("unchecked")
-    public List<StockViewVO> getStockListByView(String paramPageNum){
+    public List<StockViewVO> getStockListByView(String paramPageNum, String limit){
 
 
-        PagingVO pagingVO = CommonUtil.makePaging(paramPageNum);
+        PagingVO pagingVO = CommonUtil.makePaging(paramPageNum,limit);
         List<StockViewVO> stockViewList = (List<StockViewVO>) CommonUtil.DatProcessing(stockViewMapper.getStockListByView(pagingVO));
 
         return stockViewList;

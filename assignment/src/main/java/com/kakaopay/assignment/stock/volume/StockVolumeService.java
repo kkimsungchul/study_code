@@ -19,10 +19,10 @@ public class StockVolumeService {
      * @return List<StockViewVO>
      * */
     @SuppressWarnings("unchecked")
-    public List<StockVolumeVO> getStockListByVolume(String paramPageNum){
+    public List<StockVolumeVO> getStockListByVolume(String paramPageNum, String limit){
 
 
-        PagingVO pagingVO = CommonUtil.makePaging(paramPageNum);
+        PagingVO pagingVO = CommonUtil.makePaging(paramPageNum,limit);
         List<StockVolumeVO> stockVolumeList = (List<StockVolumeVO>) CommonUtil.DatProcessing(stockVolumeMapper.getStockListByVolume(pagingVO));
 
         return stockVolumeList;

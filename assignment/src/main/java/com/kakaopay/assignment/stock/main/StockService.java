@@ -1,7 +1,6 @@
 package com.kakaopay.assignment.stock.main;
 
 
-
 import com.kakaopay.assignment.common.DateUtil;
 import com.kakaopay.assignment.stock.rate.StockRateService;
 import com.kakaopay.assignment.stock.view.StockViewService;
@@ -9,7 +8,6 @@ import com.kakaopay.assignment.stock.volume.StockVolumeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +21,7 @@ public class StockService {
     StockMapper stockMapper;
 
     /**
-     * 오늘 날짜의 주식 초기 가격을 가져옴
+     * 오늘 날짜의 주식 시초가 가격을 가져옴
      * @return List<StockVO>
      * */
     public List<StockVO> initStockPriceList(){

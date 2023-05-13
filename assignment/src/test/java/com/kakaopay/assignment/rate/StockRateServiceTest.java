@@ -34,7 +34,7 @@ public class StockRateServiceTest {
     @DisplayName("목록 출력 테스트")
     public void getStockViewListTest(){
         String pageNum = "0";
-        for(StockVO stockVO : stockRateService.getStockListByRate(pageNum,"desc")){
+        for(StockVO stockVO : stockRateService.getStockListByRate(pageNum,null,"desc")){
             System.out.println("## stockVolumeVO : " + stockVO.getCode() +" , " + stockVO.getName() + " , " + stockVO.getPercent() + " , " + stockVO.getNowPrice());
         }
     }
@@ -43,9 +43,9 @@ public class StockRateServiceTest {
     @DisplayName("가격 데이터 변경 테스트")
     public void viewDataChange(){
         String pageNum = "0";
-        List<StockVO> stockRateList =  stockRateService.getStockListByRate(pageNum,"desc");
+        List<StockVO> stockRateList =  stockRateService.getStockListByRate(pageNum,null,"desc");
         stockService.priceDataChange();
-        List<StockVO> chageStockRateList =  stockRateService.getStockListByRate(pageNum,"desc");
+        List<StockVO> chageStockRateList =  stockRateService.getStockListByRate(pageNum,null,"desc");
 
         List<StockVO> notChangeStockViewList = stockRateList.stream()
                 .filter(change -> chageStockRateList.stream().anyMatch(Predicate.isEqual(change)))

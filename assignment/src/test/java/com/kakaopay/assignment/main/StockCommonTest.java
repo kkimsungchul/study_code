@@ -44,19 +44,40 @@ public class StockCommonTest {
     }
 
     @Test
-    @DisplayName("페이징 테스트")
-    public void makePagingTest(){
-        assertThat(CommonUtil.makePaging("0").getPageNum()).isEqualTo(0);
-        assertThat(CommonUtil.makePaging("1").getPageNum()).isEqualTo(0);
-        assertThat(CommonUtil.makePaging("2").getPageNum()).isEqualTo(20);
-        assertThat(CommonUtil.makePaging("3").getPageNum()).isEqualTo(40);
-        assertThat(CommonUtil.makePaging("4").getPageNum()).isEqualTo(60);
-        assertThat(CommonUtil.makePaging("5").getPageNum()).isEqualTo(80);
-        assertThat(CommonUtil.makePaging("6").getPageNum()).isEqualTo(80);
-        assertThat(CommonUtil.makePaging("1000000").getPageNum()).isEqualTo(80);
-        assertThat(CommonUtil.makePaging("-5").getPageNum()).isEqualTo(0);
-        assertThat(CommonUtil.makePaging("adkfjahsdkjfhaksdf").getPageNum()).isEqualTo(0);
-        assertThat(CommonUtil.makePaging("99999999999999999999999999999999999999999").getPageNum()).isEqualTo(0);
+    @DisplayName("페이징 테스트 - limit null")
+    public void makePagingByPageTest(){
+        assertThat(CommonUtil.makePaging("0",null).getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("1",null).getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("2",null).getPageNum()).isEqualTo(20);
+        assertThat(CommonUtil.makePaging("3",null).getPageNum()).isEqualTo(40);
+        assertThat(CommonUtil.makePaging("4",null).getPageNum()).isEqualTo(60);
+        assertThat(CommonUtil.makePaging("5",null).getPageNum()).isEqualTo(80);
+        assertThat(CommonUtil.makePaging("6",null).getPageNum()).isEqualTo(80);
+        assertThat(CommonUtil.makePaging("1000000",null).getPageNum()).isEqualTo(80);
+        assertThat(CommonUtil.makePaging("-5",null).getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("adkfjahsdkjfhaksdf",null).getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("99999999999999999999999999999999999999999",null).getPageNum()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("페이징 테스트 - limit Not null")
+    public void makePagingByPageAndLimitTest(){
+        assertThat(CommonUtil.makePaging("0","50").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("1","50").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("2","50").getPageNum()).isEqualTo(50);
+        assertThat(CommonUtil.makePaging("3","50").getPageNum()).isEqualTo(50);
+
+        assertThat(CommonUtil.makePaging("0","10").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("1","10").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("11","10").getPageNum()).isEqualTo(90);
+        assertThat(CommonUtil.makePaging("100","10").getPageNum()).isEqualTo(90);
+
+        assertThat(CommonUtil.makePaging("1000000","100").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("-5","50").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("adkfjahsdkjfhaksdf","asdfasdf").getPageNum()).isEqualTo(0);
+        assertThat(CommonUtil.makePaging("99999999999999999999999999999999999999999","20").getPageNum()).isEqualTo(0);
+
+        assertThat(CommonUtil.makePaging("100","17").getPageNum()).isEqualTo(85);
     }
 
 }

@@ -23,8 +23,8 @@ public class StockRateService {
      * @return List<StockVO>
      * */
     @SuppressWarnings("unchecked")
-    public List<StockVO> getStockListByRate(String paramPageNum, String order){
-        PagingVO pagingVO = CommonUtil.makePaging(paramPageNum);
+    public List<StockVO> getStockListByRate(String paramPageNum, String limit, String order){
+        PagingVO pagingVO = CommonUtil.makePaging(paramPageNum,limit);
         pagingVO.setOrder(order);
         List<StockVO> stockRateList = (List<StockVO>) CommonUtil.DatProcessing(stockRateMapper.getStockListByRate(pagingVO));
         return stockRateList;

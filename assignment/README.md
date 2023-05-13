@@ -15,14 +15,16 @@
 ### 서버 환경
 - JAVA 1.8
 - SpringBoot 2.6.14
-- Gradle 7.6.1
+- Gradle 7.6.10
 - JUnit5
 - H2 Database
 
 ---
 ## 빌드 및 실행
 ### 코드 내려 받기
+```shell
 git clone https://github.com/kakaopayseccoding-server/202305-kimsc1218-gmail.com.git
+```
 
 ### 리눅스 빌드
 ```shell
@@ -43,10 +45,18 @@ java -jar build/libs/assignment-0.0.1-SNAPSHOT.jar
 
 
 ### 서버 접속 URL
-http://localhost:8080
+- http://localhost:8080
 
 ### Swagger 접속 URL
-http://localhost:8080/swagger-ui/index.html
+- http://localhost:8080/swagger-ui/index.html
+
+### DB 접속 URL
+- http://localhost:8080/h2-console/login.jsp
+- Saved Settings : Generic H2 (Embedded)
+- Setting Name : Generic H2 (Embedded)
+- ID : sa
+- PW : 
+- JDBC URL : jdbc:h2:~/test
 
 ---
 ## 요구사항 및 기술제약
@@ -77,7 +87,7 @@ http://localhost:8080/swagger-ui/index.html
 ## 요구사항 분석 및 설계
 ### API 분석
 - 인기, 상승, 하락, 거래량 페이지에 보여지는 데이터는 모두 똑같으며, 정렬 기준만이 다름.
-- 모든 페이지에는 "종목코드" , "종목명" , "현재가" , "등락률" 이 표시됨.
+- 모든 페이지에는 "종목코드" , "종목명" , "현재가" , "등락률" ,"등락률에 따른 색상" 이 표시됨.
 - 위 내용을 토대로 리턴할 부모 클래스(StockVO)를 생성하고, 각각의 페이지에서 필요로 하는 필드는 부모 클래스(StockVO)를 상속받아서 구현.
 
 ### 공통 API 설계
@@ -95,9 +105,7 @@ http://localhost:8080/swagger-ui/index.html
 public class ApiExceptionHandler {
     @ExceptionHandler(value = { Exception.class })
     public ResponseEntity<ResponseAPI> exceptionHandler(HttpServletRequest request, final Exception e){
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ResponseAPI("fail",e.getMessage(),LocalDateTime.now()));
+        return new ResponseEntity<>(new ResponseAPI("fail",e.getMessage(),LocalDateTime.now()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 ```
@@ -150,11 +158,13 @@ public class ApiExceptionHandler {
 ## 요구사항 개발
 ### 개발 고려사항
 - 모든 API에는 등락률이 표시되고 있으므로, 시초가와 현재가의 가격 차이를 계산해야함.
-- 데이터 변경 API를 호출하여 가격,거래량,조회수를 무작위로 변경해야 함.
+- 모든 API 조회시 데이터 변경 API를 호출하여 가격,거래량,조회수를 무작위로 변경해야 함.
 - 국내 주식의 특성상 상한가(+30%)와 하한가(-30%)를 고려해야함.
 
 ### 공통사항
-- 페이징 처리(20개)로 되어 있으며1~5페이까지만 조회 가능하며 1보다 작을경우 첫페이지 5보다 클경우 마지막 페이지(5)를 표시하도록 함
+- 모든 API 호출 시 DB에 저장되어 있는 데이터가 갱신되도록 하였음 (Interceptor 사용)
+- 페이징 처리(20개)로 되어 있으며 별도의 limit를 지정하지 않을 경우 최대 표시할 갯수인 100개 기준으로 1~5페이지만 조회 가능하며 1보다 작을경우 첫페이지 5보다 클경우 마지막 페이지(5)를 표시하도록 함
+- limit 를 지정할 경우 해당 값으로 갯수를 리턴하며 페이징 처리함, 다만 100보다 클경우 100으로 제한을 걸어둠
 - 페이지 값에 숫자가 아닌 문자가 들어올 경우 기본 1페이지를 표시되도록 함
 - 페이지 값 없이 데이터를 조회할 경우 기본 1페이지가 표시되도록 함 (ex /view , /volume)
 - 조회수와 거래량은 기존 데이터에 더하지 않고 매번 새로운 값으로 갱신 (1~9999사이)
@@ -181,6 +191,14 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 
 
 ### API 명세
+#### 페이징 설명
+```text
+page : 표시할 페이지 번호 (default = 1)
+limit : 표시할 갯수 (default = 20)
+※ limit 갯수에 따라 표시할 page의 수량의 변함
+```
+ 
+
 
 #### ResultData 설명
 ```json
@@ -205,10 +223,6 @@ JAVA에서 처리할 경우 데이터를 불러 온 후 임의의 값으로 변�
 ### 데이터 랜덤 갱신
 ```text
 해당 API 호출 시 Database에 있는 값들이 변경되도록 구현
-all : 가격 , 거래량 , 조회수 변경
-view : 조회수 변경
-price : 가격 변경
-volume : 거래량 변경
 ```
  
 - URL : http://localhost:8080/stock/change
@@ -219,7 +233,16 @@ volume : 거래량 변경
   "type": "all"   //all or view or volume or price
 }
 ```
-- ResultData :
+```text
+type에 들어 갈수 있는 값
+all : 가격 , 거래량 , 조회수 변경
+view : 조회수 변경
+price : 가격 변경
+volume : 거래량 변경
+※ 위에 기재되지 않은 데이터의 경우에는 all로 처리함
+```
+
+- Response :
 ```json
 {
   "message": "success",
@@ -233,9 +256,9 @@ volume : 거래량 변경
 조회수(view) 컬럼을 생성하여 사용자가 클릭했을 때 하나씩 증가한다는 가정으로 구현
 view가 높은순으로 조회되도록 구현
 ```
-- URL : http://localhost:8080/view/{page}
+- URL : http://localhost:8080/view?page={page}&limit={limit}
 - Method : GET
-- ResultData : 
+- Response : 
 ```json
 {
   "message": "success",
@@ -270,9 +293,9 @@ view가 높은순으로 조회되도록 구현
 ```text
 price 컬럼을 생성하여 시초가와 현재가의 등략률(percent)을 계산하여 등략률이 높은 순으로 조회되도록 구현
 ```
-- URL : http://localhost:8080/rate/up/{page}
+- URL : http://localhost:8080/rate/up?page={page}&limit={limit}
 - Method : GET
-- ResultData :
+- Response :
 ```json
 {
   "message": "success",
@@ -304,9 +327,9 @@ price 컬럼을 생성하여 시초가와 현재가의 등략률(percent)을 계
 ```text
 price 컬럼을 생성하여 시초가와 현재가의 등략률(percent)을 계산하여 등략률이 낮은 순으로 조회되도록 구현
 ```
-- URL : http://localhost:8080/rate/down/{page}
+- URL : http://localhost:8080/rate/down?page={page}&limit={limit}
 - Method : GET
-- ResultData :
+- Response :
 ```json
 {
   "message": "success",
@@ -340,9 +363,9 @@ price 컬럼을 생성하여 시초가와 현재가의 등략률(percent)을 계
 거래량(volume) 컬럼을 생성하여 사용자가 거래를 진행했을 때 하나씩 증가한다는 가정으로 구현
 volume가 높은 순으로 조회되도록 구현
 ```
-- URL : http://localhost:8080/volume/{page}
+- URL : http://localhost:8080/volume?page={page}&limit={limit}
 - Method : GET
-- ResultData :
+- Response :
 ```json
 {
   "message": "success",

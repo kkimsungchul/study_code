@@ -31,6 +31,7 @@ public class StockController {
 
     @GetMapping(value = {""})
     public ResponseEntity<ResponseAPI> initDate(){
+        int a = 10/0;
         ResponseAPI responseAPI = ResponseAPI.builder()
                 .message("success")
                 .data(stockService.initStockPriceList())

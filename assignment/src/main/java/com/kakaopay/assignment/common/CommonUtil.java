@@ -70,30 +70,51 @@ public class CommonUtil {
      * 페이징 처리
      * @return PagingVO
      **/
-    public static PagingVO makePaging(String paramPageNum){
-        int pageNum=0;
+    public static PagingVO makePaging(String paramPageNum, String paramLimit){
+        int maxValue = 100;
+        int pageNum  = 0;
+        int limit = 20;
+        int maxPage =maxValue/limit;
 
-        if(Objects.isNull(paramPageNum)){
-            paramPageNum="0";
+        if(Objects.nonNull(paramPageNum)){
+            try{
+                pageNum = Integer.valueOf(paramPageNum);
+            }catch (NumberFormatException nfe){
+                pageNum = 0;
+            }
         }
-        try{
-            pageNum = Integer.valueOf(paramPageNum);
-        }catch (NumberFormatException nfe){
-            pageNum = 0;
+        if(Objects.nonNull(paramLimit)){
+            try{
+                limit = Integer.valueOf(paramLimit);
+                if(limit>100){
+                    limit = 100;
+                }
+            }catch (NumberFormatException nfe){
+                limit = 20;
+            }
         }
 
-        //페이지가 1보다 작거나 같을 경우
+        if(maxValue%limit>0){
+            maxPage =maxValue/limit+1;
+        }else{
+            maxPage =maxValue/limit;
+        }
+
+
         if(pageNum<=1){
             pageNum=1;
-        //페이지가 5보다 클경우
-        }else if(pageNum>5){
-            pageNum = 5;
+        }else if(pageNum>=maxPage){
+            pageNum = maxPage;
         }
 
-        pageNum= (pageNum-1)*20;
+        pageNum= (pageNum-1)*limit;
+
+        if(maxValue-pageNum<limit){
+            limit = maxValue-pageNum;
+        }
         return PagingVO.builder()
                 .pageNum(pageNum)
-                .limit(20)
+                .limit(limit)
                 .toDay(DateUtil.getDate())
                 .build();
     }

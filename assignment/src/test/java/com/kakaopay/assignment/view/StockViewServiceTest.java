@@ -30,7 +30,7 @@ public class StockViewServiceTest {
     @DisplayName("목록 출력 테스트")
     public void getStockViewListTest(){
         String pageNum = "0";
-        for(StockViewVO stockViewVO : stockViewService.getStockListByView(pageNum)){
+        for(StockViewVO stockViewVO : stockViewService.getStockListByView(pageNum,null)){
             System.out.println("## stockViewVO : " + stockViewVO.getCode() +" , " + stockViewVO.getName() + " , " + stockViewVO.getView() + " , " + stockViewVO.getNowPrice());
         }
     }
@@ -39,9 +39,9 @@ public class StockViewServiceTest {
     @DisplayName("조회수 데이터 변경 테스트")
     public void viewDataChange(){
         String pageNum = "0";
-        List<StockViewVO> stockViewList =  stockViewService.getStockListByView(pageNum);
+        List<StockViewVO> stockViewList =  stockViewService.getStockListByView(pageNum,null);
         stockViewService.viewDataChange();
-        List<StockViewVO> changeStockViewList =  stockViewService.getStockListByView(pageNum);
+        List<StockViewVO> changeStockViewList =  stockViewService.getStockListByView(pageNum,null);
 
         List<StockViewVO> notChangeStockViewList = stockViewList.stream()
                 .filter(change -> changeStockViewList.stream().anyMatch(Predicate.isEqual(change)))

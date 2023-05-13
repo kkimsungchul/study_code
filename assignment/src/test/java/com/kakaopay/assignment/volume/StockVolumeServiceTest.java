@@ -29,7 +29,7 @@ public class StockVolumeServiceTest {
     @DisplayName("목록 출력 테스트")
     public void getStockViewListTest(){
         String pageNum = "0";
-        for(StockVolumeVO stockVolumeVO : stockVolumeService.getStockListByVolume(pageNum)){
+        for(StockVolumeVO stockVolumeVO : stockVolumeService.getStockListByVolume(pageNum,null)){
             System.out.println("## stockVolumeVO : " + stockVolumeVO.getCode() +" , " + stockVolumeVO.getName() + " , " + stockVolumeVO.getVolume() + " , " + stockVolumeVO.getNowPrice());
         }
     }
@@ -38,9 +38,9 @@ public class StockVolumeServiceTest {
     @DisplayName("거래량 데이터 변경 테스트")
     public void viewDataChange(){
         String pageNum = "0";
-        List<StockVolumeVO> stockVolumeList =  stockVolumeService.getStockListByVolume(pageNum);
+        List<StockVolumeVO> stockVolumeList =  stockVolumeService.getStockListByVolume(pageNum,null);
         stockVolumeService.volumeDataChange();
-        List<StockVolumeVO> changeStockVolumeList =  stockVolumeService.getStockListByVolume(pageNum);
+        List<StockVolumeVO> changeStockVolumeList =  stockVolumeService.getStockListByVolume(pageNum,null);
 
         List<StockVolumeVO> notChangeStockViewList = stockVolumeList.stream()
                 .filter(change -> changeStockVolumeList.stream().anyMatch(Predicate.isEqual(change)))
