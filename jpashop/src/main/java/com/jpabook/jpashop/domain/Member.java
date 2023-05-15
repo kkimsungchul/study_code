@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity //필수
 //@Table(name="MEMBER")//테이블명이 다를 때 해당 테이블명으로 지정
-public class Member {
+public class Member extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "MEMBER_ID")
