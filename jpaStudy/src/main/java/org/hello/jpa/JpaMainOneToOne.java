@@ -1,6 +1,6 @@
 package org.hello.jpa;
 
-import org.hello.jpa.member.domain.Locker;
+
 import org.hello.jpa.member.domain.Member;
 import org.hello.jpa.member.domain.Team;
 
@@ -21,14 +21,14 @@ public class JpaMainOneToOne {
         //트랜잭션 실행
         tx.begin();
         try{
-            Locker locker = new Locker();
-            locker.setName("user100_Locker");
-
-            em.persist(locker);
+//            Locker locker = new Locker();
+//            locker.setName("user100_Locker");
+//
+//            em.persist(locker);
 
             Member member = new Member();
             member.setUsername("user100");
-            member.setLocker(locker);
+//            member.setLocker(locker);
             em.persist(member);
 
             tx.commit();

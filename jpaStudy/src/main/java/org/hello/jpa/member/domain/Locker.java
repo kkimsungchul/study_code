@@ -1,3 +1,4 @@
+/*
 package org.hello.jpa.member.domain;
 
 import javax.persistence.*;
@@ -30,3 +31,4 @@ public class Locker {
         this.name = name;
     }
 }
+*/
