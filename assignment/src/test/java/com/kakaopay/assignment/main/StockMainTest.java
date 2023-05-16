@@ -1,9 +1,7 @@
 package com.kakaopay.assignment.main;
 
-import com.kakaopay.assignment.common.CommonUtil;
 import com.kakaopay.assignment.stock.main.DataChangeVO;
 import com.kakaopay.assignment.stock.main.StockService;
-import com.kakaopay.assignment.stock.main.StockVO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("인기순위 목록 테스트")

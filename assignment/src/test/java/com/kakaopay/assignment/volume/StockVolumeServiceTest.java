@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
@@ -27,8 +28,10 @@ public class StockVolumeServiceTest {
 
     @Test
     @DisplayName("목록 출력 테스트")
-    public void getStockViewListTest(){
+    public void getStockVolumeListTest(){
         String pageNum = "0";
+
+        assertThat(stockVolumeService.getStockListByVolume(pageNum,null).size()).isEqualTo(20);
         for(StockVolumeVO stockVolumeVO : stockVolumeService.getStockListByVolume(pageNum,null)){
             System.out.println("## stockVolumeVO : " + stockVolumeVO.getCode() +" , " + stockVolumeVO.getName() + " , " + stockVolumeVO.getVolume() + " , " + stockVolumeVO.getNowPrice());
         }

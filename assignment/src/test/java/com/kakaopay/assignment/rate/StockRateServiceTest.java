@@ -4,8 +4,6 @@ package com.kakaopay.assignment.rate;
 import com.kakaopay.assignment.stock.main.StockService;
 import com.kakaopay.assignment.stock.main.StockVO;
 import com.kakaopay.assignment.stock.rate.StockRateService;
-import com.kakaopay.assignment.stock.volume.StockVolumeService;
-import com.kakaopay.assignment.stock.volume.StockVolumeVO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
@@ -32,8 +31,9 @@ public class StockRateServiceTest {
 
     @Test
     @DisplayName("목록 출력 테스트")
-    public void getStockViewListTest(){
+    public void getStockListByRateTest(){
         String pageNum = "0";
+        assertThat(stockRateService.getStockListByRate(pageNum,null,"desc").size()).isEqualTo(20);
         for(StockVO stockVO : stockRateService.getStockListByRate(pageNum,null,"desc")){
             System.out.println("## stockVolumeVO : " + stockVO.getCode() +" , " + stockVO.getName() + " , " + stockVO.getPercent() + " , " + stockVO.getNowPrice());
         }
