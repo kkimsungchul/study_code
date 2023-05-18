@@ -1,0 +1,23 @@
+{
+  "port" : 8080,
+  "host_info" : [
+    {
+      "host_name" : "ahost",
+      "home_directory" : "ahost",
+      "error_page" : {
+        "error403" : "403.html",
+        "error404" : "404.html",
+        "error500" : "500.html"
+      }
+    },
+    {
+      "host_name" : "bhost",
+      "home_directory" : "bhost",
+      "error_page" : {
+        "error403" : "403.html",
+        "error404" : "404.html",
+        "error500" : "500.html"
+      }
+    }
+  ]
+}

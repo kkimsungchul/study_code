@@ -5,16 +5,29 @@ import java.net.Socket;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.nhn.property.ConfigVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RequestProcessor implements Runnable {
-    private final static Logger logger = Logger.getLogger(RequestProcessor.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
     private File rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
+    private ConfigVO.HostInfo hostInfo;
 
-    public RequestProcessor(File rootDirectory, String indexFileName, Socket connection) {
+
+    public RequestProcessor(ConfigVO configVO , String indexFileName, Socket connection) {
+        LOGGER.info("client connect host  " + connection.getInetAddress().getHostName());
+        this.hostInfo =  configVO.getHost().get(0);
+        for(ConfigVO.HostInfo hostInfo : configVO.getHost()){
+            if(hostInfo.getHostName().equalsIgnoreCase(connection.getInetAddress().getHostName().split("\\.")[0])){
+                this.hostInfo = hostInfo;
+            }
+        }
+
+        File rootDirectory = new File(hostInfo.getHomeDirectory());
         if (rootDirectory.isFile()) {
             throw new IllegalArgumentException(
                     "rootDirectory must be a directory, not a file");
@@ -22,10 +35,12 @@ public class RequestProcessor implements Runnable {
         try {
             rootDirectory = rootDirectory.getCanonicalFile();
         } catch (IOException ex) {
+
         }
         this.rootDirectory = rootDirectory;
-        if (indexFileName != null)
+        if (indexFileName != null){
             this.indexFileName = indexFileName;
+        }
         this.connection = connection;
     }
 
@@ -45,7 +60,7 @@ public class RequestProcessor implements Runnable {
                 requestLine.append((char) c);
             }
             String get = requestLine.toString();
-            logger.info(connection.getRemoteSocketAddress() + " " + get);
+            LOGGER.info(connection.getRemoteSocketAddress() + " " + get);
             String[] tokens = get.split("\\s+");
             String method = tokens[0];
             String version = "";
@@ -99,7 +114,7 @@ public class RequestProcessor implements Runnable {
                 out.flush();
             }
         } catch (IOException ex) {
-            logger.log(Level.WARNING, "Error talking to " + connection.getRemoteSocketAddress(), ex);
+            LOGGER.error("Error talking to " + connection.getRemoteSocketAddress(), ex);
         } finally {
             try {
                 connection.close();

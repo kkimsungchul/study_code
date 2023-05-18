@@ -7,67 +7,55 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.nhn.property.ConfigVO;
+import com.nhn.property.JsonPropertyReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by cybaek on 15. 5. 22..
  */
 public class HttpServer {
-    private static final Logger logger = Logger.getLogger(HttpServer.class.getCanonicalName());
+    static final Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
     private static final int NUM_THREADS = 50;
     private static final String INDEX_FILE = "index.html";
-    private final File rootDirectory;
     private final int port;
-
-    public HttpServer(File rootDirectory, int port) throws IOException {
-        if (!rootDirectory.isDirectory()) {
-            throw new IOException(rootDirectory
-                    + " does not exist as a directory");
-        }
-        this.rootDirectory = rootDirectory;
+    private final ConfigVO config;
+    public HttpServer(int port , ConfigVO config) throws IOException {
         this.port = port;
+        this.config = config;
     }
 
     public void start() throws IOException {
         ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
         try (ServerSocket server = new ServerSocket(port)) {
-            logger.info("Accepting connections on port " + server.getLocalPort());
-            logger.info("Document Root: " + rootDirectory);
+            LOGGER.info("Accepting connections on port " + server.getLocalPort());
             while (true) {
                 try {
                     Socket request = server.accept();
-                    Runnable r = new RequestProcessor(rootDirectory, INDEX_FILE, request);
+                    Runnable r = new RequestProcessor(config ,INDEX_FILE, request);
                     pool.submit(r);
                 } catch (IOException ex) {
-                    logger.log(Level.WARNING, "Error accepting connection", ex);
+                    LOGGER.warn("Error accepting connection", ex);
                 }
             }
         }
     }
 
+
+
+
     public static void main(String[] args) {
-        // get the Document root
-        File docroot;
+        JsonPropertyReader jsonPropertyReader = new JsonPropertyReader();
+        ConfigVO config = jsonPropertyReader.readProperty();
+        int port = config.getPort();
+        LOGGER.info("server start, connection port : {}",port);
         try {
-            docroot = new File(args[0]);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            System.out.println("Usage: java JHTTP docroot port");
-            return;
-        }
-        // set the port to listen on
-        int port;
-        try {
-            port = Integer.parseInt(args[1]);
-            if (port < 0 || port > 65535) port = 8080;
-        } catch (RuntimeException ex) {
-            port = 8080;
-        }
-        try {
-            HttpServer webserver = new HttpServer(docroot, port);
+            HttpServer webserver = new HttpServer(port , config);
             webserver.start();
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Server could not start", ex);
+            LOGGER.error("Server could not start", ex);
         }
     }
 }
