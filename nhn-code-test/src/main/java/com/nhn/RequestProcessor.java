@@ -90,8 +90,7 @@ public class RequestProcessor implements Runnable {
         String mappingURL = tokens[1];
         String version = tokens[2];
         String className = mappingURL.replaceAll("/","");
-
-        if(className.contains("../")){
+        if(className.contains("../") || className.contains(".exe")){
             HttpResponse res = new HttpResponse(out);
             errorHandler(res , "403");
             return ;
