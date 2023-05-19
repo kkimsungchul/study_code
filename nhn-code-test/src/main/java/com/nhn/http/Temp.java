@@ -1,34 +1,29 @@
-package com.nhn;
+package com.nhn.http;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.nhn.http.HttpRequest;
-import com.nhn.http.HttpResponse;
-import com.nhn.http.ServletMapping;
-import com.nhn.http.SimpleServlet;
 import com.nhn.property.ConfigVO;
+import com.nhn.property.HostInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestProcessor implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
+public class Temp implements Runnable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Temp.class);
     private File rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
-    private ConfigVO.HostInfo hostInfo;
+    private HostInfoVO hostInfo;
 
 
 
-    public RequestProcessor(ConfigVO configVO , String indexFileName, Socket connection) {
+    public Temp(ConfigVO configVO , String indexFileName, Socket connection) {
         LOGGER.info("client connect host  " + connection.getInetAddress().getHostName());
         this.hostInfo =  configVO.getHost().get(0);
-        for(ConfigVO.HostInfo hostInfo : configVO.getHost()){
+        for(HostInfoVO hostInfo : configVO.getHost()){
             if(hostInfo.getHostName().equalsIgnoreCase(connection.getInetAddress().getHostName().split("\\.")[0])){
                 this.hostInfo = hostInfo;
             }
@@ -73,7 +68,6 @@ public class RequestProcessor implements Runnable {
             String[] tokens = get.split("\\s+");
             String method = tokens[0];
             String version = "";
-            new ServletMapping(get);
 
             if (method.equals("GET")) {
                 String fileName = tokens[1];

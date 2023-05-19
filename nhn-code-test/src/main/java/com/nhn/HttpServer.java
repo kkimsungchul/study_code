@@ -1,17 +1,16 @@
 package com.nhn;
 
 
-import java.io.File;
+import com.nhn.property.ConfigVO;
+import com.nhn.property.JsonPropertyReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.nhn.property.ConfigVO;
-import com.nhn.property.JsonPropertyReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by cybaek on 15. 5. 22..
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 public class HttpServer {
     static final Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
     private static final int NUM_THREADS = 50;
-    private static final String INDEX_FILE = "index.html";
     private final int port;
     private final ConfigVO config;
     public HttpServer(int port , ConfigVO config) throws IOException {
@@ -34,17 +32,14 @@ public class HttpServer {
             while (true) {
                 try {
                     Socket request = server.accept();
-                    Runnable r = new RequestProcessor(config ,INDEX_FILE, request);
+                    Runnable r = new RequestProcessor(config , request);
                     pool.submit(r);
                 } catch (IOException ex) {
-                    LOGGER.warn("Error accepting connection", ex);
+                    LOGGER.error("Error accepting connection", ex);
                 }
             }
         }
     }
-
-
-
 
     public static void main(String[] args) {
         JsonPropertyReader jsonPropertyReader = new JsonPropertyReader();

@@ -2,19 +2,17 @@ package com.nhn.servlet.service;
 
 import com.nhn.http.HttpRequest;
 import com.nhn.http.HttpResponse;
-import com.nhn.http.SimpleServlet;
+import com.nhn.http.SendHeaderAndData;
+import com.nhn.servlet.SimpleServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
 
 public class Hello implements SimpleServlet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Hello.class);
     public void service(HttpRequest req, HttpResponse res){
         Writer writer = res.getWriter();
-        try{
-//            writer.write("com.nhn.servlet.service Hello, ");
-//            writer.flush();
-//            String body ="com.nhn.servlet.service.Hello.java";
             String body = new StringBuilder("<HTML>\r\n")
                     .append("<HEAD><TITLE>File Not Found</TITLE>\r\n")
                     .append("</HEAD>\r\n")
@@ -22,20 +20,7 @@ public class Hello implements SimpleServlet {
                     .append("<H1>com.nhn.servlet.service.Hello.java</H1>\r\n")
                     .append("</BODY></HTML>\r\n")
                     .toString();
-            sendHeader(writer,"HTTP/1.0 200 OK","text/html; charset=utf-8",body);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            SendHeaderAndData.send(writer,"HTTP/1.0 200 OK","text/html; charset=utf-8",body);
     }
-    private void sendHeader(Writer out, String responseCode, String contentType, String body)
-            throws IOException {
-        Date now = new Date();
-        out.write(responseCode + "\r\n");
-        out.write("Date: " + now + "\r\n");
-        out.write("Server: JHTTP 2.0\r\n");
-        out.write("Content-length: " + body.length() + "\r\n");
-        out.write("Content-type: " + contentType + "\r\n\r\n");
-        out.write(body);
-        out.flush();
-    }
+
 }

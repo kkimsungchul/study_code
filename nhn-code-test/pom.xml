@@ -76,7 +76,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>config.json</include>
+                    <include>*</include>
                 </includes>
             </resource>
             <resource>
