@@ -1,19 +1,13 @@
-package com.nhn.servlet.service;
+package com.nhn.servlet;
 
 import com.nhn.http.HttpRequest;
 import com.nhn.http.HttpResponse;
-import com.nhn.servlet.SimpleServlet;
 import com.nhn.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-/**
- * SimpleServlet 인터페이스를 구현한 Hello 클래스
- * @author 김성철
- */
-public class Hello implements SimpleServlet {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Hello.class);
+public class Nowtime implements SimpleServlet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Nowtime.class);
 
     /**
      * 전달받은 객체를 사용하여 화면에 출력

@@ -1,87 +1,42 @@
-package com.nhn;
+package com.nhn.main;
 
 import com.nhn.http.HttpRequest;
 import com.nhn.http.HttpResponse;
-import com.nhn.http.SendHeaderAndData;
 import com.nhn.servlet.SimpleServlet;
-import com.nhn.property.ConfigVO;
-import com.nhn.property.HostInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 
-public class RequestProcessor implements Runnable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
+
+/**
+ * servlet 기능을 구현한 클래스
+ * @author 김성철
+ */
+public class ServletService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServletService.class);
     private File rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
-    private HostInfoVO hostInfoVO;
 
+    public ServletService(){};
 
-
-    public RequestProcessor(ConfigVO configVO ,  Socket connection) {
-        LOGGER.info("client connect host  " + connection.getInetAddress().getHostName());
-        this.hostInfoVO =  configVO.getHost().get(0);
-        for(HostInfoVO hostInfo : configVO.getHost()){
-            if(hostInfo.getHostName().equalsIgnoreCase(connection.getInetAddress().getHostName().split("\\.")[0])){
-                this.hostInfoVO = hostInfo;
-            }
-        }
-        File rootDirectory = new File(hostInfoVO.getHomeDirectory());
-        if (rootDirectory.isFile()) {
-            LOGGER.error("rootDirectory must be a directory, not a file");
-            throw new IllegalArgumentException(
-                    "rootDirectory must be a directory, not a file");
-        }
-        try {
-            rootDirectory = rootDirectory.getCanonicalFile();
-        } catch (IOException ex) {
-            LOGGER.error("rootDirectory getCanonicalFile Error",ex);
-        }
+    public ServletService(File rootDirectory , Socket connection){
         this.rootDirectory = rootDirectory;
         this.connection = connection;
     }
 
-
-
-
-    @Override
-    public void run() {
-        // for security checks
-        String root = rootDirectory.getPath();
-        try {
-            OutputStream raw = new BufferedOutputStream(connection.getOutputStream());
-            Writer out = new OutputStreamWriter(raw);
-            Reader in = new InputStreamReader(new BufferedInputStream(connection.getInputStream()), "UTF-8");
-            StringBuilder requestLine = new StringBuilder();
-            while (true) {
-                int c = in.read();
-                if (c == '\r' || c == '\n')
-                    break;
-                requestLine.append((char) c);
-            }
-            String get = requestLine.toString();
-            LOGGER.info("run - connection.getRemoteSocketAddress() " + connection.getRemoteSocketAddress() + " " + get);
-            servletMapping(get , out);
-
-        } catch (Exception ex) {
-            LOGGER.error("Error talking to " + connection.getRemoteSocketAddress(), ex);
-        } finally {
-            try {
-                connection.close();
-            } catch (IOException ex) {
-                LOGGER.error("Connection Close Error {}",ex);
-            }
-        }
-    }
-
-
-
+    /**
+     * servletMapping 전달받은 URL을 토대로 데이터를 처리하여 사용자에게 리턴
+     * @param get URL 정보
+     * @param out 사용자에게 데이터를 표시할 때 사용할 Writer 객체
+     */
     public void servletMapping(String get , Writer out) {
         HashMap<String, Object> servletMap = new HashMap<>();
         String[] tokens = get.split("\\s+");
@@ -89,7 +44,18 @@ public class RequestProcessor implements Runnable {
         String method = tokens[0];
         String mappingURL = tokens[1];
         String version = tokens[2];
-        String className = mappingURL.replaceAll("/","");
+        String queryString="";
+        String className = "";
+
+        // URL 에서 Query String 분리
+        if(mappingURL.split("\\?").length>=2){
+            className = mappingURL.split("\\?")[0].replaceAll("/","");
+            queryString = mappingURL.split("\\?")[1];
+        }else{
+            className = mappingURL.replaceAll("/","");
+        }
+
+        //접근 권한이 없는 페이지 또는 .exe 파일 접근시 403 리턴
         if(className.contains("../") || className.contains(".exe")){
             HttpResponse res = new HttpResponse(out);
             errorHandler(res , "403");
@@ -99,6 +65,7 @@ public class RequestProcessor implements Runnable {
         String fullMappingURL="";
         className = makeClassName(className);
 
+        //매핑되는 class 파일이 없는경우 404페이지 리턴
         if(className==null){
             String root = rootDirectory.getPath();
             File theFile = new File(rootDirectory, indexFileName);
@@ -110,7 +77,8 @@ public class RequestProcessor implements Runnable {
                         sb.append(line).append("\n");
                     }
                     if (version.startsWith("HTTP/")) { // send a MIME header
-                        SendHeaderAndData.send(out,"HTTP/1.0 200 OK" , "text/html; charset=utf-8" , sb.toString());
+                        HttpResponse response = new HttpResponse(out);
+                        response.send("HTTP/1.0 200 OK" , "text/html; charset=utf-8" , sb.toString());
                     }
                 }
             }catch (IOException ioe){
@@ -120,13 +88,19 @@ public class RequestProcessor implements Runnable {
             fullMappingURL = packageName+"."+makeClassName(className);
             if (version.startsWith("HTTP/")) {
                 servletMap.put(mappingURL, classMapping(fullMappingURL));
-                HttpRequest request = new HttpRequest(mappingURL);
+                HttpRequest request = new HttpRequest(mappingURL , queryString);
                 HttpResponse response = new HttpResponse(out);
                 handleRequest(request, response , servletMap);
             }
         }
     }
 
+
+    /**
+     * URL 주소로 매핑할 클래스 이름을 생성
+     * @param fullClassName 매핑할 클래스 정보
+     * @return result 매핑할 클래스 이름
+     */
     public String makeClassName(String fullClassName){
         if(fullClassName.indexOf("favicon.ico")>0){
             return null;
@@ -149,7 +123,14 @@ public class RequestProcessor implements Runnable {
         return result;
     }
 
+
+    /**
+     * 매핑할 서블릿 클래스 생성
+     * @param fullMappingURL 매핑할 클래스 이름(패키지.클래스명)
+     * @return object 생성한 서블릿 클래스
+     */
     public Object classMapping(String fullMappingURL) {
+
         try{
             Class<?> clazz = Class.forName(fullMappingURL);
             return clazz.newInstance();
@@ -163,7 +144,12 @@ public class RequestProcessor implements Runnable {
 
     }
 
-
+    /**
+     * 매핑할 서블릿 클래스 생성
+     * @param req HttpRequest 객체
+     * @param res HttpResponse 객체
+     * @param servletMap 매핑된 서블릿 클래스 정보
+     */
     public void handleRequest(HttpRequest req, HttpResponse res , HashMap<String, Object> servletMap) {
         String url = req.getRequestURL();
         SimpleServlet servlet = (SimpleServlet)servletMap.get(url);
@@ -174,6 +160,11 @@ public class RequestProcessor implements Runnable {
         }
     }
 
+    /**
+     * 매핑할 서블릿 클래스 생성
+     * @param res HttpResponse 객체
+     * @param errorCode 오류코드
+     */
     public void errorHandler(HttpResponse res , String errorCode){
         String fileName ="";
         String responseCode = "http/1.0 ";
@@ -197,7 +188,7 @@ public class RequestProcessor implements Runnable {
                 for (String line : fileData) {
                     sb.append(line).append("\n");
                 }
-                SendHeaderAndData.send(res.getWriter(),responseCode , "text/html; charset=utf-8" , sb.toString());
+                res.send(responseCode , "text/html; charset=utf-8" , sb.toString());
 
             }
         }catch (IOException ioe){
@@ -205,5 +196,4 @@ public class RequestProcessor implements Runnable {
         }
 
     }
-
 }

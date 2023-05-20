@@ -1,32 +1,35 @@
 package com.nhn.property;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.io.InputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
+
+/**
+ * config.json 파일을 읽어오는 클래스
+ * @author 김성철
+ */
 public class JsonPropertyReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonPropertyReader.class);
 
+    /**
+     * config.json 파일을 읽어오는 메소드
+     * @return ConfigVO
+     */
     public ConfigVO readProperty(){
         ConfigVO config = new ConfigVO();
         try {
-            //프로젝트 최상의 디렉토리의 config 파일을 읽을때 사용하며, config.json 파일을 프로젝트 폴더의 root디렉토리 밑에 위치시키면 됨
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            config = objectMapper.readValue(new File(System.getProperty("user.dir")+ "/config.json"), ConfigVO.class);
 
             //config 포함하여 빌드하여 읽을때
             ObjectMapper objectMapper = new ObjectMapper();
             InputStream inputStream = JsonPropertyReader.class.getClassLoader().getResourceAsStream("config.json");
             config = objectMapper.readValue(inputStream, ConfigVO.class);
-
-
-            LOGGER.info(config.toString());
+            LOGGER.info("readProperty Success  config : {}" ,config.toString());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("readProperty Fail , " , e);
+            return null;
         }
         return config;
     }

@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
+/**
+ * 날짜계산 클래스
+ * @author 김성철
+ */
 public class DateUtil {
     /*yyyyMMdd 로 현재 날짜 리턴*/
     public static String getDate() {

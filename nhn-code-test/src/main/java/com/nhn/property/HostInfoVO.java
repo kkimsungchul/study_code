@@ -2,6 +2,11 @@ package com.nhn.property;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+/**
+ * config.json의 Host 설정을 VO로 변환한 클래스
+ * @author 김성철
+ */
 public class HostInfoVO {
     @JsonProperty("error_page")
     private ErrorPage errorPage;
