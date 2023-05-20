@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * HttpResponse 구현 클래스
@@ -44,11 +45,13 @@ public class HttpResponse {
      * @param body 화면에 출력할 데이터
      */
     public void send(String responseCode, String contentType, String body){
+        byte[] responseBody = body.getBytes(StandardCharsets.UTF_8);
+        int contentLength = responseBody.length;
         try {
             this.writer.write(responseCode + "\r\n");
             this.writer.write("Date: " + DateUtil.getTime("yyyy-MM-dd HH:mm:ss") + "\r\n");
             this.writer.write("Server: JHTTP 2.0\r\n");
-            this.writer.write("Content-length: " + body.length() + "\r\n");
+            this.writer.write("Content-length: " + contentLength + "\r\n");
             this.writer.write("Content-type: " + contentType + "\r\n\r\n");
             this.writer.write(body);
             this.writer.flush();

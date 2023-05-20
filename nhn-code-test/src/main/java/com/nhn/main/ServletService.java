@@ -6,13 +6,10 @@ import com.nhn.servlet.SimpleServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 
 
 /**
@@ -21,13 +18,13 @@ import java.util.List;
  */
 public class ServletService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServletService.class);
-    private File rootDirectory;
+    private String rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
 
     public ServletService(){};
 
-    public ServletService(File rootDirectory , Socket connection){
+    public ServletService(String rootDirectory , Socket connection){
         this.rootDirectory = rootDirectory;
         this.connection = connection;
     }
@@ -46,7 +43,6 @@ public class ServletService {
         String version = tokens[2];
         String queryString="";
         String className = "";
-
         // URL 에서 Query String 분리
         if(mappingURL.split("\\?").length>=2){
             className = mappingURL.split("\\?")[0].replaceAll("/","");
@@ -56,7 +52,7 @@ public class ServletService {
         }
 
         //접근 권한이 없는 페이지 또는 .exe 파일 접근시 403 리턴
-        if(className.contains("../") || className.contains(".exe")){
+        if(mappingURL.contains("../") || mappingURL.contains(".exe")){
             HttpResponse res = new HttpResponse(out);
             errorHandler(res , "403");
             return ;
@@ -67,23 +63,24 @@ public class ServletService {
 
         //매핑되는 class 파일이 없는경우 404페이지 리턴
         if(className==null){
-            String root = rootDirectory.getPath();
-            File theFile = new File(rootDirectory, indexFileName);
-            try{
-                if (theFile.canRead() && theFile.getCanonicalPath().startsWith(root)) {
-                    List<String> fileData = Files.readAllLines(theFile.toPath());
-                    StringBuilder sb = new StringBuilder();
-                    for (String line : fileData) {
-                        sb.append(line).append("\n");
+            StringBuilder stringBuilder = new StringBuilder();
+            String content="";
+            InputStream inputStream = RequestProcessor.class.getResourceAsStream(rootDirectory+"/index.html");
+            if (inputStream != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        stringBuilder.append(line);
                     }
-                    if (version.startsWith("HTTP/")) { // send a MIME header
-                        HttpResponse response = new HttpResponse(out);
-                        response.send("HTTP/1.0 200 OK" , "text/html; charset=utf-8" , sb.toString());
-                    }
+                } catch (IOException e) {
+                    LOGGER.error("Index.html file Error" , e);
                 }
-            }catch (IOException ioe){
-                LOGGER.error("index file read error" , ioe);
             }
+            if (version.startsWith("HTTP/")) { // send a MIME header
+                HttpResponse response = new HttpResponse(out);
+                response.send("HTTP/1.0 200 OK" , "text/html; charset=utf-8" , stringBuilder.toString());
+            }
+
         }else{
             fullMappingURL = packageName+"."+makeClassName(className);
             if (version.startsWith("HTTP/")) {
@@ -102,7 +99,7 @@ public class ServletService {
      * @return result 매핑할 클래스 이름
      */
     public String makeClassName(String fullClassName){
-        if(fullClassName.indexOf("favicon.ico")>0){
+        if(fullClassName.indexOf("favicon")>0){
             return null;
         }else if(fullClassName.trim().length()==0){
             return null;
@@ -178,22 +175,21 @@ public class ServletService {
             fileName="500.html";
             responseCode += "500 Server Error";
         }
-
-        String root = rootDirectory.getPath();
-        File theFile = new File(rootDirectory, fileName);
-        try{
-            if (theFile.canRead() && theFile.getCanonicalPath().startsWith(root)) {
-                List<String> fileData = Files.readAllLines(theFile.toPath());
-                StringBuilder sb = new StringBuilder();
-                for (String line : fileData) {
-                    sb.append(line).append("\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        String content="";
+        InputStream inputStream = RequestProcessor.class.getResourceAsStream(rootDirectory+"/"+fileName);
+        if (inputStream != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream,StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
                 }
-                res.send(responseCode , "text/html; charset=utf-8" , sb.toString());
-
+            } catch (IOException e) {
+                LOGGER.error("Index.html file Error" , e);
             }
-        }catch (IOException ioe){
-            LOGGER.error("index file read error" , ioe);
         }
+        res.send(responseCode , "text/html; charset=utf-8" , stringBuilder.toString());
+
 
     }
 }

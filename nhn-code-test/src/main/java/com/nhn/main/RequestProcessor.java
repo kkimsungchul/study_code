@@ -11,12 +11,12 @@ import java.net.Socket;
 
 /**
  * WAS 기능을 구현한 클래스, 과제 진행에 사용해도 된다고 전달받은 예제코드를 수정하여 사용함
- * servlet service 로 전달하기전 데이터 정제 및 설정파일 읽어오는 작업을 진행,
+ * servlet service 로 전달하기전 데이터 정제 및 설정파일 읽어오는 작업을 함
  * @author 김성철
  */
 public class RequestProcessor implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
-    private File rootDirectory;
+    private String rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
     private HostInfoVO hostInfoVO;
@@ -38,17 +38,7 @@ public class RequestProcessor implements Runnable {
                 this.hostInfoVO = hostInfo;
             }
         }
-        File rootDirectory = new File(hostInfoVO.getHomeDirectory());
-        if (rootDirectory.isFile()) {
-            LOGGER.error("rootDirectory must be a directory, not a file");
-            throw new IllegalArgumentException(
-                    "rootDirectory must be a directory, not a file");
-        }
-        try {
-            rootDirectory = rootDirectory.getCanonicalFile();
-        } catch (IOException ex) {
-            LOGGER.error("rootDirectory getCanonicalFile Error",ex);
-        }
+        String rootDirectory = hostInfoVO.getHomeDirectory();
         this.rootDirectory = rootDirectory;
         this.connection = connection;
     }
@@ -63,10 +53,9 @@ public class RequestProcessor implements Runnable {
     @Override
     public void run() {
         // for security checks
-        String root = rootDirectory.getPath();
         try {
             OutputStream raw = new BufferedOutputStream(connection.getOutputStream());
-            Writer out = new OutputStreamWriter(raw);
+            Writer out = new OutputStreamWriter(raw,"UTF-8");
             Reader in = new InputStreamReader(new BufferedInputStream(connection.getInputStream()), "UTF-8");
             StringBuilder requestLine = new StringBuilder();
             while (true) {

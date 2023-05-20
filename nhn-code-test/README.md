@@ -28,17 +28,17 @@
 ## 빌드 및 실행
 ### 사전 작업
 - Maven은 설치되어 있다고 가정한다.
-- 압축파일을 해체한 위치는 "C:\test" 로 가정한다.
+- 압축파일을 해체한 위치는 "C:\test\nhn-code-test" 로 가정한다.
 
 ### 빌드 방법
 ```shell
-cd C:\IntelliJProject\study_code\nhn-code-test
+cd C:\test\nhn-code-test
 mvn clean package
 ```
 
 ### 실행 방법
 ```shell
-cd C:\IntelliJProject\study_code\nhn-code-test\target
+cd C:\test\nhn-code-test\target
 java –jar was.jar
 
 ```
