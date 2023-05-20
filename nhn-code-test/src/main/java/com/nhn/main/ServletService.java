@@ -142,7 +142,7 @@ public class ServletService {
     }
 
     /**
-     * 매핑할 서블릿 클래스 생성
+     * 클래스 메핑
      * @param req HttpRequest 객체
      * @param res HttpResponse 객체
      * @param servletMap 매핑된 서블릿 클래스 정보
@@ -158,7 +158,7 @@ public class ServletService {
     }
 
     /**
-     * 매핑할 서블릿 클래스 생성
+     * 오류 처리
      * @param res HttpResponse 객체
      * @param errorCode 오류코드
      */
@@ -189,7 +189,5 @@ public class ServletService {
             }
         }
         res.send(responseCode , "text/html; charset=utf-8" , stringBuilder.toString());
-
-
     }
 }
