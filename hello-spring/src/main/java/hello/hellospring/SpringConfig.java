@@ -1,11 +1,12 @@
 package hello.hellospring;
 
 
-import hello.hellospring.repository.JdbcMemberRepository;
-import hello.hellospring.repository.JdbcTemplateMemberRepository;
-import hello.hellospring.repository.MemberRepository;
-import hello.hellospring.repository.MemoryMemberRepository;
+import hello.hellospring.aop.TimeTraceAop;
+import hello.hellospring.repository.*;
 import hello.hellospring.service.MemberService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,24 +14,58 @@ import javax.sql.DataSource;
 
 @Configuration
 public class SpringConfig {
+    private final MemberRepository memberRepository;
 
-    private DataSource dataSource;
-
-    public SpringConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+    //생성자 하나일경우 autowired 생략 가능
+    @Autowired
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
-
     @Bean
     public MemberService memberService(){
-        return new MemberService(memberRepository());
+        return  new MemberService(memberRepository);
     }
 
-    @Bean
-    public MemberRepository memberRepository() {
-//        return new MemoryMemberRepository();
-//        return new JdbcMemberRepository(dataSource);
-        return new JdbcTemplateMemberRepository(dataSource);
-    }
+//    @Bean
+//    public TimeTraceAop timeTraceAop(){
+//        return new TimeTraceAop();
+//    }
+
+
+//    //JPA 자동주입 1
+//    //@PersistenceContext
+//    private EntityManager em;
+//
+//    //JPA 자동주입 2
+//    @Autowired
+//    public SpringConfig(EntityManager em) {
+//        this.em = em;
+//    }
+
+
+    //JPA 사용하기전
+//    private DataSource dataSource;
+//
+//    public SpringConfig(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
+//    @Bean
+//    public MemberService memberService(){
+//        return new MemberService(memberRepository());
+//    }
+
+//    @Bean
+//    public MemberRepository memberRepository() {
+//        //메모리DB
+////        return new MemoryMemberRepository();
+//        //JDBC 사용
+////        return new JdbcMemberRepository(dataSource);
+//        //JDBC Template 사용
+////        return new JdbcTemplateMemberRepository(dataSource);
+//        //JPA 사용
+////        return new JpaMemberRepository(em);
+//    }
+
     //DI에는 생성자 주입, 필드 주입 ,setter 주입 세가지가 있음
     // 필드 주입은 수정할수 있는 방안이 없음
     // setter 주입은 접근지시자가 public임

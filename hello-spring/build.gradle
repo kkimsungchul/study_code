@@ -18,8 +18,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //h2
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    //implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     runtimeOnly 'com.h2database:h2'
+     
+    //jpa - JDBC를 포함하고 있음
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 tasks.named('test') {

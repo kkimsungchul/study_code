@@ -12,5 +12,10 @@ spring:
     init :
       mode : always
       encoding: utf-8
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
 server :
   port : 8080
