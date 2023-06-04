@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 
-@Entity //필수
+@Entity //필수 
 //@Table(name="MEMBER")//테이블명이 다를 때 해당 테이블명으로 지정
 public class Member extends BaseEntity{
 
@@ -15,9 +15,9 @@ public class Member extends BaseEntity{
     private Long id;
     //@Column(length = 10)
     private String name;
-    private String city;
-    private String street;
-    private String zipcode;
+
+    @Embedded// 해당 클래스에 @Embeddable 가 있으면 생략 가능함, 명확하게 하기위해 명시
+    private Address address;
 
     @OneToMany(mappedBy ="member")
     private List<Order> orders = new ArrayList<>();
@@ -38,28 +38,12 @@ public class Member extends BaseEntity{
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public List<Order> getOrders() {

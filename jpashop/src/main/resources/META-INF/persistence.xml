@@ -13,6 +13,7 @@
         <class>com.jpabook.jpashop.domain.Album</class>
         <class>com.jpabook.jpashop.domain.Movie</class>
         <class>com.jpabook.jpashop.domain.Book</class>
+        <class>com.jpabook.jpashop.domain.Address</class>
 
         <properties>
             <!-- 필수 속성 -->
