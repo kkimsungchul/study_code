@@ -71,6 +71,51 @@ public class JpqlFetchMain {
                     System.out.println("# member : " + resultMember);
                 }
             }
+            //엔티티 직접 사용
+            String jpql1 = "select m from Member m where m = :member";
+            List<Member> resultList1 = em.createQuery(jpql1)
+                    .setParameter("member", member)
+                    .getResultList();
+
+            //식별자를 직접 전달
+            long memberId = 1;
+            String jpql2 = "select m from Member m where m.id = :memberId";
+            List<Member> resultList2 = em.createQuery(jpql2)
+                    .setParameter("memberId", memberId)
+                    .getResultList();
+
+            System.out.println("##################");
+            Team team1 = em.find(Team.class,1L);
+            String jpql3 = "select m from Member m  where m.team = :team";
+            List<Member> resultList3 = em.createQuery(jpql3)
+                    .setParameter("team", team1)
+                    .getResultList();
+
+            String jpql4 = "select m from Member m  where m.team.id = :teamId";
+            List<Member> resultList4 = em.createQuery(jpql4)
+                    .setParameter("teamId", team1.getId())
+                    .getResultList();
+
+
+            System.out.println("#########");
+            em.createNamedQuery("Member.findByUsername" , Member.class)
+                            .setParameter("username", "회원1")
+                            .getResultList();
+
+
+            int resultCount = em.createQuery("update Member m set m.age = 20")
+                            .executeUpdate();
+            System.out.println("member3.getAge() = " + member3.getAge());
+
+            Member findMember = em.find(Member.class , member3.getId());
+            System.out.println("member3.getAge() = " +findMember.getAge());
+
+            em.clear();
+            Member findMember2 = em.find(Member.class , member3.getId());
+            System.out.println("member3.getAge() = " +findMember2.getAge());
+
+
+
 
             tx.commit();
         }catch (Exception e){
