@@ -15,7 +15,7 @@ Spring :
         format_sql: true
 
 server:
-  port: 9000
+  port: 9090
 logging.level:
     org.hibernate.sql : debug
     org.hibernate.type : trace #??? ??? ???? ????

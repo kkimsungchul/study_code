@@ -1,5 +1,6 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.domain.Member;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ class MemberRepositoryTest {
 
         //given
         Member member = new Member();
-        member.setUsername("김성철");
+        member.setName("김성철");
 
         //when
         Long saveId = memberRepository.save(member);
@@ -31,7 +32,7 @@ class MemberRepositoryTest {
 
         //then
         Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        Assertions.assertThat(findMember.getName()).isEqualTo(member.getName());
 
         Assertions.assertThat(findMember).isEqualTo(member);//같음, 같은 영속성 컨텍스트 안에 있음
         System.out.println("### findMember == member : " +  (findMember == member));
