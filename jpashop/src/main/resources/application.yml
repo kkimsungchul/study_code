@@ -3,7 +3,7 @@ Spring :
     #url : jdbc:h2:tcp:localhost/~/jpashop;MVCC=TRUE
     url : jdbc:h2:tcp:localhost/~/jpashop; #mvcc ??? ?? ?? ??? ???
     username : sa
-    password : sa1234
+    password :
     driver-class-name : org.h2.Driver
 
   jpa :
