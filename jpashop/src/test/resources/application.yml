@@ -1,0 +1,22 @@
+Spring :
+#  datasource :
+#    url : jdbc:h2:mem:test
+#    username : sa
+#    password :
+#    driver-class-name : org.h2.Driver
+#
+#  jpa :
+#    hibernate:
+#      ddl-auto: create # SrpingBoot는 기본적으로 create-drop로 돌아감,
+# create 는 drop -> create
+# create-drop 는 drop -> create -> 애플리케이션 종료시 drop
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+
+server:
+  port: 9090
+logging.level:
+    org.hibernate.sql : debug
+    org.hibernate.type : trace 

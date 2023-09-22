@@ -29,8 +29,9 @@ public class MemberRepository {
      * 멤버 저장
      * @param member 멤버 정보
      * */
-    public void save(Member member){
+    public long save(Member member){
         em.persist(member);
+        return member.getId();
     };
 
     /**
