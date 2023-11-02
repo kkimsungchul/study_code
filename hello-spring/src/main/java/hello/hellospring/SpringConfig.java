@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 
 @Configuration
 public class SpringConfig {
-    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository; //여기에 SpringData JPA 가 자동으로 주입을 해줌
 
     //생성자 하나일경우 autowired 생략 가능
     @Autowired

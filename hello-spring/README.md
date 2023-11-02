@@ -46,8 +46,10 @@ Spring JdbcTemplate과 Mybatis 같은 라이브러리는 JDBC API 에서 반복�
 
 - 어노테이션 DI(의존성주입) 설명
 - DI에는 생성자 주입, 필드 주입 ,setter 주입 세가지가 있음
+- 상황에 따라 구현 클래스를 변경해야 할 경우 설정을 통해 스프링 빈으로 등록
+- 자바 코드로 직접 스프링 빈 등록하기 , 순수 JDBC < 해당 챕터 참고
 ```java
-	//필드 주입은 수정할수 있는 방안이 없음
+	//필드 주입은 수정할수 있는 방안이 없음 
 	@Controller
 	public class MemberController {
 		@Autowired
@@ -141,11 +143,17 @@ CRUD 기능도 스프링 데이터 JPA가 모두 제공함
 ```text
 interface 를 생성하고 JpaRepository를 상속받아 놓으면 Spring data가 알아서 구현하고 스프링 빈에 등록을함
 ```
+```text
+interface SpringDataJpaMemberRepository extends JpaRepository 
+처럼 JpaRepository 를 구현하면 자동으로 스프링Bean에 등록됨
+등록된 내용은 SpringConfg의  memberRepository에 자동 주입됨
+private final MemberRepository memberRepository; //여기에 SpringData JPA 가 자동으로 주입을 해줌
+```
 ```java
 //JPA 사용시 SpringConfig
 @Configuration
 public class SpringConfig {
-    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository; //여기에 SpringData JPA 가 자동으로 주입을 해줌
 
     //생성자 하나일경우 autowired 생략 가능
     @Autowired
