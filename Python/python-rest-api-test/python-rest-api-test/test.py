@@ -4,7 +4,6 @@ import json
 url = "https://naver.com"
 headers = {
     'Authorization': 'Bearer asdfasdffsdfkjnaskdjfnkjnerjkqerqwrqwrqrw'
-
 }
 print(headers)
 response = requests.get(url, headers=headers, verify=False)
