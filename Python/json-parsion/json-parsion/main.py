@@ -15,3 +15,12 @@ with open('formatted_users1.json', 'w', encoding='utf-8') as file:
     file.write(formatted_json)
 
 print('저장완료')
+
+
+
+def call_api(url):
+
+    return 1
+
+a = call_api("h")
+print(a)
