@@ -25,7 +25,7 @@ public class Member {
     @Embedded
     private Address address;
 
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "member")//order 필드에 있는 member에 매핑
     private List<Order> orders = new ArrayList<>();
 
