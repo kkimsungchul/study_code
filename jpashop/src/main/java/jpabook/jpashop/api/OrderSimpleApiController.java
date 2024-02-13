@@ -6,6 +6,8 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.simplerquery.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order.simplerquery.OrderSimpleQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     @GetMapping("/api/v1/simple-orders")
     public List<Order> ordersV1(){
@@ -55,6 +58,28 @@ public class OrderSimpleApiController {
         return result;
 
     }
+
+    @GetMapping("/api/v3/simple-orders")
+    public List<SimpleOrderDto> ordersV3(){
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    
+    //재사용성이 떨어짐, API의 스펙이 리포지토리에 들어감
+    //1. Entity -> DTO로 변환
+    //2. 필요하면 페치조인으로 성능 최적화
+    //3. 그래도 안되면 DTO로 직접 조회
+    //4. 최후의 방법은 JPA가 제공하는 네이티브 SQL이나 스프링 JDBCTemplate을 사용하여 SQL을 사용
+    @GetMapping("/api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4(){
+        return orderSimpleQueryRepository.findOrderDtos();
+    }
+
 
     @Data
     static class SimpleOrderDto{
